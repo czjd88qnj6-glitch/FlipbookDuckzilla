@@ -23,5 +23,17 @@ body {
 #book {
   touch-action: none; 
 }
+/* Migliora nitidezza su iOS durante zoom/drag */
+#zoomWrap, #flipInner, #flipInner img, canvas {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+#flipInner img, canvas {
+  image-rendering: auto;
+}
+
 
 
