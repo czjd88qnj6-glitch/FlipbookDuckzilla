@@ -20,4 +20,8 @@ body {
   #book {max-width: 560px; margi: 0 auto; }
 }
 
+#book {
+  touch-action: none; 
+}
+
 
