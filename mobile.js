@@ -14,6 +14,7 @@ let panzoom;
 function initFlipbook() {
   bookEl.innerHTML = "";
 
+  // 1 pagina sempre, dimensioni adattive
   const vw = Math.min(window.innerWidth, window.innerHeight);
   const pageW = Math.min(520, Math.max(320, vw - 24));
   const pageH = Math.round(pageW * 1.42);
@@ -45,7 +46,7 @@ function initFlipbook() {
 
   pageFlip.loadFromImages(buildPages(100));
 
-  // Panzoom (pinch + drag)
+  // init Panzoom (da libs/panzoom.min.js)
   if (panzoom) panzoom.destroy();
   panzoom = Panzoom(zoomWrap, {
     maxScale: 4,
@@ -53,16 +54,19 @@ function initFlipbook() {
     contain: "outside",
   });
 
-  // abilita pinch iOS
+  // Zoom con wheel (desktop) + pinch (mobile)
   zoomWrap.addEventListener("wheel", panzoom.zoomWithWheel);
 
-  // doppio tap = zoom in/out
+  // doppio tap per zoom 2x / reset
   let lastTap = 0;
-  zoomWrap.addEventListener("touchend", (e) => {
+  zoomWrap.addEventListener("touchend", () => {
     const now = Date.now();
     if (now - lastTap < 300) {
       const s = panzoom.getScale();
-      panzoom.zoomTo(zoomWrap.getBoundingClientRect().width / 2, zoomWrap.getBoundingClientRect().height / 2, s > 1 ? 1 : 2);
+      const rect = zoomWrap.getBoundingClientRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      panzoom.zoomTo(cx, cy, s > 1 ? 1 : 2);
     }
     lastTap = now;
   });
