@@ -1,6 +1,3 @@
-// DEBUG: se vedi questa scritta, stai usando il codice nuovo
-document.documentElement.setAttribute("data-build", "MOBILE-JS-1");
-
 const bookEl = document.getElementById("book");
 
 function buildPages(total = 100) {
@@ -11,30 +8,23 @@ function buildPages(total = 100) {
   return pages;
 }
 
-function isMobile() {
-  const uaMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const touch = (navigator.maxTouchPoints || 0) > 0;
-  const small = Math.min(window.innerWidth, window.innerHeight) <= 900;
-  return uaMobile || (touch && small);
-}
-
 let pageFlip;
 
-function init() {
+function initFlipbook() {
   bookEl.innerHTML = "";
 
-  const mobile = isMobile();
-
-  // ✅ SU MOBILE: FORZO 1 PAGINA E NIENTE COVER
-  // (questo elimina per sempre l’effetto “copertina + pagina”)
-  const forceSingle = mobile;
+  // ✅ FORZA 1 PAGINA SEMPRE (mobile-first definitivo)
+  // Niente cover => mai “copertina + pagina”
+  const vw = Math.min(window.innerWidth, window.innerHeight);
+  const pageW = Math.min(520, Math.max(320, vw - 24));
+  const pageH = Math.round(pageW * 1.42);
 
   pageFlip = new St.PageFlip(bookEl, {
-    width: 520,
-    height: 740,
+    width: pageW,
+    height: pageH,
     size: "fixed",
 
-    usePortrait: forceSingle,
+    usePortrait: true,
     showCover: false,
 
     mobileScrollSupport: false,
@@ -45,10 +35,10 @@ function init() {
   pageFlip.loadFromImages(buildPages(100));
 }
 
-init();
+initFlipbook();
 
 let t;
 window.addEventListener("resize", () => {
   clearTimeout(t);
-  t = setTimeout(init, 250);
+  t = setTimeout(initFlipbook, 250);
 });
