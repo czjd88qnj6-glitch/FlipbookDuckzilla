@@ -24,10 +24,10 @@ function initFlipbook() {
     size: "fixed",
     usePortrait: true,
     showCover: false,
+    renderDensity: window.devicePixelRatio || 2,
     mobileScrollSupport: false,
     flippingTime: 650,
     maxShadowOpacity: 0.4,
-    renderDensity: window.devicePixelRatio || 2,
 
   });
 
