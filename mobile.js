@@ -33,6 +33,9 @@ function initFlipbook() {
   zoomWrap.appendChild(inner);
   bookEl.appendChild(zoomWrap);
 
+  zoomWrap.style.willChange = "transform";
+inner.style.willChange = "transform";
+
   pageFlip = new St.PageFlip(inner, {
     width: pageW,
     height: pageH,
