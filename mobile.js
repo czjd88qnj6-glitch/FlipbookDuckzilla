@@ -9,34 +9,16 @@ function buildPages(total = 100) {
 }
 
 let pageFlip;
-let panzoom;
+let zoomed = false;
 
 function initFlipbook() {
   bookEl.innerHTML = "";
 
-  // 1 pagina sempre, dimensioni adattive
   const vw = Math.min(window.innerWidth, window.innerHeight);
   const pageW = Math.min(520, Math.max(320, vw - 24));
   const pageH = Math.round(pageW * 1.42);
 
-  // wrapper per zoom
-  const zoomWrap = document.createElement("div");
-  zoomWrap.id = "zoomWrap";
-  zoomWrap.style.width = "100%";
-  zoomWrap.style.height = "100%";
-  zoomWrap.style.display = "flex";
-  zoomWrap.style.alignItems = "center";
-  zoomWrap.style.justifyContent = "center";
-
-  const inner = document.createElement("div");
-  inner.id = "flipInner";
-  zoomWrap.appendChild(inner);
-  bookEl.appendChild(zoomWrap);
-
-  zoomWrap.style.willChange = "transform";
-inner.style.willChange = "transform";
-
-  pageFlip = new St.PageFlip(inner, {
+  pageFlip = new St.PageFlip(bookEl, {
     width: pageW,
     height: pageH,
     size: "fixed",
@@ -49,30 +31,30 @@ inner.style.willChange = "transform";
 
   pageFlip.loadFromImages(buildPages(100));
 
-  // init Panzoom (da libs/panzoom.min.js)
-  if (panzoom) panzoom.destroy();
-  panzoom = Panzoom(zoomWrap, {
-    maxScale: 2,
-    minScale: 1,
-    contain: "outside",
-  });
+  // zoom con doppio tap sulla pagina
+  bookEl.addEventListener("touchend", handleDoubleTap);
+}
 
-  // Zoom con wheel (desktop) + pinch (mobile)
-  zoomWrap.addEventListener("wheel", panzoom.zoomWithWheel);
+function handleDoubleTap(e) {
+  if (e.touches && e.touches.length > 0) return;
 
-  // doppio tap per zoom 2x / reset
-  let lastTap = 0;
-  zoomWrap.addEventListener("touchend", () => {
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      const s = panzoom.getScale();
-      const rect = zoomWrap.getBoundingClientRect();
-      const cx = rect.width / 2;
-      const cy = rect.height / 2;
-      panzoom.zoomTo(cx, cy, s > 1 ? 1 : 2);
-    }
-    lastTap = now;
-  });
+  const now = Date.now();
+  if (!handleDoubleTap.last) handleDoubleTap.last = now;
+  if (now - handleDoubleTap.last < 300) {
+    toggleZoom();
+  }
+  handleDoubleTap.last = now;
+}
+
+function toggleZoom() {
+  const page = document.querySelector(".stf__item--active img, .stf__item--active canvas");
+  if (!page) return;
+
+  zoomed = !zoomed;
+
+  page.style.transition = "transform 0.25s ease";
+  page.style.transformOrigin = "center center";
+  page.style.transform = zoomed ? "scale(2)" : "scale(1)";
 }
 
 initFlipbook();
@@ -82,3 +64,4 @@ window.addEventListener("resize", () => {
   clearTimeout(t);
   t = setTimeout(initFlipbook, 250);
 });
+
