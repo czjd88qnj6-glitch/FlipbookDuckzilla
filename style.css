@@ -16,15 +16,8 @@ body {
   justify-content: center;
 }
 
-html::before{
-  content: attr(data-build);
-  position: fixed;
-  top: 10px; left: 10px;
-  background: rgba(0,0,0,.6);
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 10px;
-  font: 12px/1 system-ui;
-  z-index: 9999;
+@media (max-width: 900px) {
+  #book {max-width: 560px; margi: 0 auto; }
 }
+
 
