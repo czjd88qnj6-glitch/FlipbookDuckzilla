@@ -15,7 +15,7 @@ function initFlipbook() {
   bookEl.innerHTML = "";
 
   const vw = Math.min(window.innerWidth, window.innerHeight);
-  const pageW = Math.min(520, Math.max(320, vw - 24));
+  const pageW = Math.min(720, Math.max(360, vw - 24));
   const pageH = Math.round(pageW * 1.42);
 
   pageFlip = new St.PageFlip(bookEl, {
@@ -27,6 +27,8 @@ function initFlipbook() {
     mobileScrollSupport: false,
     flippingTime: 650,
     maxShadowOpacity: 0.4,
+    renderDensity: window.devicePixelRatio || 2,
+
   });
 
   pageFlip.loadFromImages(buildPages(100));
