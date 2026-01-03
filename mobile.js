@@ -52,7 +52,7 @@ inner.style.willChange = "transform";
   // init Panzoom (da libs/panzoom.min.js)
   if (panzoom) panzoom.destroy();
   panzoom = Panzoom(zoomWrap, {
-    maxScale: 4,
+    maxScale: 2,
     minScale: 1,
     contain: "outside",
   });
